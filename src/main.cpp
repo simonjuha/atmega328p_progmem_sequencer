@@ -67,6 +67,7 @@ const PROGMEM uint8_t random_chunk1[] = {
 const int random_chunk1_size = sizeof(random_chunk1)/sizeof(random_chunk1[0]);
 
 bool sampleIsPlaying = false;
+bool doStep = false;
 
 Stepper stepper;
 
@@ -95,7 +96,7 @@ int main(){
 
     /* -------- 16-bit Timer interupt setup (Timer1) -------- */
     TCCR1B |= (1 << WGM12) | (1 << CS10) | (1 << CS11);
-    OCR1A = 30000;
+    OCR1A = 15000;
     TIMSK1 |= (1 << OCIE1A);// Enable Timer1 interrupt
     TIFR1 |= (1 << OCF1A); 
 
@@ -126,7 +127,27 @@ int main(){
             }
         }
         
-        OCR1A = (adc_value >> 2)*100;
+        //OCR1A = (adc_value >> 2)*100;
+
+        // stepping
+        static int gateState;
+
+        if(doStep){
+            gateState = stepper.step();
+            doStep = false;
+        }
+        switch (gateState)
+        {
+            case ON:
+                sampleIsPlaying = true;
+                break;
+            case OFF:
+                sampleIsPlaying = false;
+                break;
+            default:
+                break;
+        }
+        OCR2A = stepper.getStepSampleRate();
 
     }
 
@@ -163,20 +184,8 @@ ISR(TIMER2_COMPA_vect) {
 ISR(TIMER1_COMPA_vect) {
     // toggle led
     PORTB ^= (1 << LED1);
-    int gateState = stepper.step();
-
-    switch (gateState)
-    {
-    case ON:
-        sampleIsPlaying = true;
-        break;
-    case OFF:
-        sampleIsPlaying = false;
-        break;
-    default:
-        break;
-    }
-    OCR2A = stepper.getStepSampleRate();
+    // do step
+    doStep = true;
 }
 
 // trigger sample interrupt
