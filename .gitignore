@@ -33,3 +33,7 @@
 /.pio/build
 .vscode/c_cpp_properties.json
 .vscode/launch.json
+.vscode/launch.json
+.vscode/c_cpp_properties.json
+.pio/build/project.checksum
+.pio/build/ATmega328P/idedata.json
