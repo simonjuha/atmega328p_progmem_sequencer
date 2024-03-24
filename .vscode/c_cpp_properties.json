@@ -1,0 +1,40 @@
+//
+// !!! WARNING !!! AUTO-GENERATED FILE!
+// PLEASE DO NOT MODIFY IT AND USE "platformio.ini":
+// https://docs.platformio.org/page/projectconf/section_env_build.html#build-flags
+//
+{
+    "configurations": [
+        {
+            "name": "PlatformIO",
+            "includePath": [
+                "e:/Users/simon/Documents/PlatformIO/Projects/sampleSequencer/include",
+                "e:/Users/simon/Documents/PlatformIO/Projects/sampleSequencer/src",
+                ""
+            ],
+            "browse": {
+                "limitSymbolsToIncludedHeaders": true,
+                "path": [
+                    "e:/Users/simon/Documents/PlatformIO/Projects/sampleSequencer/include",
+                    "e:/Users/simon/Documents/PlatformIO/Projects/sampleSequencer/src",
+                    ""
+                ]
+            },
+            "defines": [
+                "F_CPU=16000000UL",
+                "PLATFORMIO=60113",
+                "ARDUINO_AVR_ATmega328P",
+                "__AVR_ATmega328P__",
+                ""
+            ],
+            "cStandard": "gnu11",
+            "cppStandard": "gnu++11",
+            "compilerPath": "C:/Users/simon/.platformio/packages/toolchain-atmelavr/bin/avr-gcc.exe",
+            "compilerArgs": [
+                "-mmcu=atmega328p",
+                ""
+            ]
+        }
+    ],
+    "version": 4
+}
