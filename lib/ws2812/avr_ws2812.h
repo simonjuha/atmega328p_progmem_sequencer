@@ -73,7 +73,13 @@ void ws2812_sendarray_mask(uint8_t *array,uint16_t length, uint8_t pinmask);
 
 #include <avr/interrupt.h>
 #include <avr/io.h>
-#include <util/delay.h>
+//#include <util/delay.h>
+// avoid using delay.h and implemented a custom delay function (aprox. 50us)
+void resetDelay(){
+    for (uint16_t i = 0; i < 800; i++) {
+        asm("nop");
+    }
+}
 
 
 #define CONCAT(a, b)            a ## b
@@ -91,14 +97,16 @@ void inline ws2812_setleds(ws2812_RGB_t *ledarray, uint16_t leds)
 void inline ws2812_setleds_pin(ws2812_RGB_t *ledarray, uint16_t leds, uint8_t pinmask)
 {
   ws2812_sendarray_mask((uint8_t*)ledarray,leds+leds+leds,pinmask);
-  _delay_us(ws2812_resettime);
+  //_delay_us(ws2812_resettime);
+  resetDelay();
 }
 
 // Setleds for SK6812RGBW
 void inline ws2812_setleds_rgbw(ws2812_RGBW_t *ledarray, uint16_t leds)
 {
   ws2812_sendarray_mask((uint8_t*)ledarray,leds<<2,_BV(ws2812_pin));
-  _delay_us(ws2812_resettime);
+  //_delay_us(ws2812_resettime);
+  resetDelay();
 }
 
 void ws2812_sendarray(uint8_t *data,uint16_t datlen)
