@@ -59,6 +59,14 @@ public:
         return _steps[_stepIndex].getSampleRate();
     }
 
+    Step* getStep(uint8_t index){
+        return &_steps[index];
+    }
+
+    uint8_t getStepIndex(){
+        return _stepIndex;
+    }
+
 
 
 private:

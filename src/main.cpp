@@ -7,6 +7,8 @@
 
 #include <stepper.hpp>
 
+#include <avr_ws2812.h>
+
 #define F_CPU 16000000UL
 #define PWM_OUT PD5
 
@@ -69,10 +71,14 @@ const int random_chunk1_size = sizeof(random_chunk1)/sizeof(random_chunk1[0]);
 bool sampleIsPlaying = false;
 bool doStep = false;
 
+bool ledChange = false;
+
 Stepper stepper;
 
 int buffer_put(uint8_t value);
 void playSample(uint16_t period);
+
+ws2812_RGB_t pixels[8] = {};
 
 int main(){
 
@@ -89,14 +95,14 @@ int main(){
     TCCR0B |= (1 << CS00);
 
     /* -------- 8-bit Timer interupt setup (Timer2) -------- */
-    TCCR2A |= (1 << WGM21); //
+    TCCR2A |= (1 << WGM21); // CTC mode
     TCCR2B |= (1 << CS21) | (1 << CS20);
     TIMSK2 |= (1 << OCIE2A);
     OCR2A = 255;
 
     /* -------- 16-bit Timer interupt setup (Timer1) -------- */
     TCCR1B |= (1 << WGM12) | (1 << CS10) | (1 << CS11);
-    OCR1A = 15000;
+    OCR1A = 8000;
     TIMSK1 |= (1 << OCIE1A);// Enable Timer1 interrupt
     TIFR1 |= (1 << OCF1A); 
 
@@ -112,9 +118,16 @@ int main(){
     
     sei();
 
+    stepper.getStep(0)->setLength(1);
+    stepper.getStep(5)->setStartOffset(3);
+    stepper.getStep(7)->setLength(5);
+    stepper.getStep(4)->setLength(1);
+    stepper.getStep(2)->setState(false);
+
+
     while(1){
 
-        uint16_t adc_value = ADC;
+        //uint16_t adc_value = ADC;
 
         static int i = 0;
 
@@ -127,12 +140,11 @@ int main(){
             }
         }
         
-        //OCR1A = (adc_value >> 2)*100;
-
         // stepping
         static int gateState;
 
         if(doStep){
+            stepper.getStep(rand() % 8)->setSampleRate((rand() % 250)+1);
             gateState = stepper.step();
             doStep = false;
         }
@@ -148,6 +160,25 @@ int main(){
                 break;
         }
         OCR2A = stepper.getStepSampleRate();
+
+    if(ledChange){
+        uint8_t currentStep = stepper.getStepIndex();
+        for(int i = 0; i < 8; i++){
+            if(i == currentStep){
+                pixels[i].r = 0;
+                pixels[i].g = 0;
+                pixels[i].b = 2;
+            }else{
+                pixels[i].r = 2;
+                pixels[i].g = 0;
+                pixels[i].b = 0;
+            }
+        }
+
+
+        ws2812_setleds(pixels, 8);
+        ledChange = false;
+    }
 
     }
 
@@ -186,12 +217,14 @@ ISR(TIMER1_COMPA_vect) {
     PORTB ^= (1 << LED1);
     // do step
     doStep = true;
+
+    ledChange = true;
 }
 
 // trigger sample interrupt
 ISR(INT1_vect) {
     if(!(PIND & (1 << BTN4))){
-        //sampleIsPlaying = false;
+       // sampleIsPlaying = false;
     }
     else{
         //sampleIsPlaying = true;

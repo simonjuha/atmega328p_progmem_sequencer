@@ -15,12 +15,20 @@ class Step{
         return _sampleRate;
     }
 
+    void setSampleRate(uint8_t sampleRate){
+        _sampleRate = sampleRate;
+    }
+
     void setStepNumber(uint8_t stepNumber){
         _stepNumber = stepNumber;
     }
 
     uint8_t getStepNumber(){
         return _stepNumber;
+    }
+
+    void setStartOffset(uint8_t startOffset){
+        _startOffset = startOffset;
     }
 
     uint8_t getStartOffset(){
@@ -37,6 +45,10 @@ class Step{
 
     void setState(bool state){
         _active = state;
+    }
+
+    bool getState(){
+        return _active;
     }
 
     private:
