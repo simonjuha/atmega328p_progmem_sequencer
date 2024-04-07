@@ -3,16 +3,12 @@
 #include <stdlib.h>
 #include <avr/io.h>
 
+#include "buttonObserver.hpp"
+
 /*
     Pins used for buttons:
     PB2, PB3, PB4, PB5, PC0, PC1, PC2, PC3
 */
-
-// observer pattern for buttons
-class ButtonObserver{
-    public:
-        virtual void onButtonPressed(int buttonIndex) = 0;
-};
 
 class ButtonObservable{
     public:
