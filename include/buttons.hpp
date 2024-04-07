@@ -8,10 +8,29 @@
     PB2, PB3, PB4, PB5, PC0, PC1, PC2, PC3
 */
 
-bool readBTN1(){
-    return !(PINB & (1 << PB2));
-}
+// observer pattern for buttons
+class ButtonObserver{
+    public:
+        virtual void onButtonPressed(int buttonIndex) = 0;
+};
 
+class ButtonObservable{
+    public:
+        void addObserver(ButtonObserver *observer){
+            observers[observerCount] = observer;
+            observerCount++;
+        }
+
+        void notify(int buttonIndex){
+            for(int i = 0; i < observerCount; i++){
+                observers[i]->onButtonPressed(buttonIndex);
+            }
+        }
+
+    private:
+        ButtonObserver *observers[8];
+        int observerCount = 0;
+};
 
 // button pin by port, name and number
 class StepButton{
@@ -55,7 +74,7 @@ class StepButton{
         bool lastState = false;
 };
 
-class StepButtonsGroup{
+class StepButtonsGroup : public ButtonObservable{
     public:
         StepButtonsGroup(){
             buttons[0] = StepButton(&PORTB, PB2, &PINB);
@@ -72,10 +91,12 @@ class StepButtonsGroup{
             for(int i = 0; i < 8; i++){
                 buttons[i].tick();
             }
-        }
 
-        bool isTriggered(int i){
-            return buttons[i].isTriggered();
+            for(int i = 0; i < 8; i++){
+                if(buttons[i].isTriggered()){
+                    notify(i);
+                }
+            }
         }
 
         bool read(int i){
@@ -84,4 +105,8 @@ class StepButtonsGroup{
 
     private:
         StepButton buttons[8];
+        bool isTriggered(int i){
+            return buttons[i].isTriggered();
+        }
 };
+
