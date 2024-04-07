@@ -6,8 +6,11 @@
 #include "buttonObserver.hpp"
 
 /*
-    Pins used for buttons:
+    Pins used for step buttons:
     PB2, PB3, PB4, PB5, PC0, PC1, PC2, PC3
+
+    Pins used for mode buttons:
+    PD7, PD6
 */
 
 class ButtonObservable{
@@ -17,9 +20,9 @@ class ButtonObservable{
             observerCount++;
         }
 
-        void notify(int buttonIndex){
+        void notify(int buttonIndex, int mode){
             for(int i = 0; i < observerCount; i++){
-                observers[i]->onButtonPressed(buttonIndex);
+                observers[i]->onButtonPressed(buttonIndex, mode);
             }
         }
 
@@ -29,10 +32,10 @@ class ButtonObservable{
 };
 
 // button pin by port, name and number
-class StepButton{
+class PushButton{
     public:
-        StepButton(){}
-        StepButton(volatile uint8_t *port, uint8_t pinName, volatile uint8_t *pinReg){
+        PushButton(){}
+        PushButton(volatile uint8_t *port, uint8_t pinName, volatile uint8_t *pinReg){
         this->port = port;
         this->pinName = pinName;
         this->pinReg = pinReg;
@@ -70,17 +73,20 @@ class StepButton{
         bool lastState = false;
 };
 
-class StepButtonsGroup : public ButtonObservable{
+class ControlInterfaceButtons : public ButtonObservable{
     public:
-        StepButtonsGroup(){
-            buttons[0] = StepButton(&PORTB, PB2, &PINB);
-            buttons[1] = StepButton(&PORTB, PB3, &PINB);
-            buttons[2] = StepButton(&PORTB, PB4, &PINB);
-            buttons[3] = StepButton(&PORTB, PB5, &PINB);
-            buttons[4] = StepButton(&PORTC, PC0, &PINC);
-            buttons[5] = StepButton(&PORTC, PC1, &PINC);
-            buttons[6] = StepButton(&PORTC, PC2, &PINC);
-            buttons[7] = StepButton(&PORTC, PC3, &PINC);
+        ControlInterfaceButtons(){
+            buttons[0] = PushButton(&PORTB, PB2, &PINB);
+            buttons[1] = PushButton(&PORTB, PB3, &PINB);
+            buttons[2] = PushButton(&PORTB, PB4, &PINB);
+            buttons[3] = PushButton(&PORTB, PB5, &PINB);
+            buttons[4] = PushButton(&PORTC, PC0, &PINC);
+            buttons[5] = PushButton(&PORTC, PC1, &PINC);
+            buttons[6] = PushButton(&PORTC, PC2, &PINC);
+            buttons[7] = PushButton(&PORTC, PC3, &PINC);
+
+            modeButtons[0] = PushButton(&PORTD, PD6, &PIND);
+            modeButtons[1] = PushButton(&PORTD, PD7, &PIND);
         }
 
         void tick(){
@@ -88,21 +94,24 @@ class StepButtonsGroup : public ButtonObservable{
                 buttons[i].tick();
             }
 
+            int mode = 0;
+
             for(int i = 0; i < 8; i++){
                 if(buttons[i].isTriggered()){
-                    notify(i);
+                    notify(i, mode);
                 }
             }
         }
 
+
+    private:
+        PushButton buttons[8];
+        PushButton modeButtons[2];
         bool read(int i){
             return buttons[i].read();
         }
-
-    private:
-        StepButton buttons[8];
         bool isTriggered(int i){
             return buttons[i].isTriggered();
         }
+    
 };
-
