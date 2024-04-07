@@ -43,7 +43,7 @@ public:
         }
 
         // step active (ON)
-        if(currentStep->getStepNumber() + currentStep->getStartOffset() == _step){
+        if((currentStep->getStepNumber() + currentStep->getStartOffset() == _step) && currentStep->getState()){
 
             return ON; // sample is played
         }
