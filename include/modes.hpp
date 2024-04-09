@@ -1,7 +1,12 @@
 #pragma once
-
 enum Mode{
-    STEP_ACTIVE,
-    STEP_SELECT,
-    STEP_LENGTH,
+    MODE_ACTIVE,
+    MODE_LENGTH,
+};
+
+enum Command{
+    CMD_SET_MODE,
+    CMD_PRESS_STEP,
+    CMD_SELECT_STEP,
+    CMD_SHIFT,
 };

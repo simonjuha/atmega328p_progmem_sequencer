@@ -5,10 +5,12 @@
 class Step{
     public:
     Step(uint8_t stepNumber) : _stepNumber(stepNumber){
-        _sampleRate = rand() % 255;
+        //_sampleRate = rand() % 255;
+        _sampleRate = 255;
     }
     Step() : _stepNumber(0){
-        _sampleRate = rand() % 255;
+        //_sampleRate = rand() % 255;
+        _sampleRate = 255;
     }
 
     uint8_t getSampleRate(){
