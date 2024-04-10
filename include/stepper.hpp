@@ -53,10 +53,6 @@ public:
         return CONTINUE;
     }
 
-    void setTempo(uint8_t tempo){
-        _tempo = tempo;
-    }
-
     uint8_t getStepSampleRate(){
         return _steps[_stepIndex].getSampleRate();
     }
@@ -73,29 +69,29 @@ public:
         return _nextStepActive;
     }
 
-    void setMode(Mode mode){
-        _mode = mode;
+    int getSelectedStep(){
+        return _selectedStep;
+    }
+
+    void setSelectedStep(int step){
+        _selectedStep = step;
     }
 
     Mode getMode(){
         return _mode;
     }
 
-    int getSelectedStep(){
-        return _selectedStep;
-    }
-
-
 
 private:
-    uint8_t _tempo;
     uint8_t _step = 0;
     Step _steps[STEPPER_STEPS_MAX];
 
     uint8_t _stepIndex = 0;
     bool _nextStepActive = false;
-    Mode _mode = MODE_ACTIVE;
+    
     int _selectedStep = 0;
+
+    Mode _mode = MODE_ACTIVE;
 
 
 };

@@ -80,7 +80,4 @@ class Leds{
         bool _doChange = false;
 
         Stepper &_stepper;
-
-        Mode _mode = MODE_ACTIVE;
-        int _selectedStep = 0;
 };

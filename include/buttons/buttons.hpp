@@ -4,6 +4,7 @@
 #include <avr/io.h>
 
 #include "buttonObserver.hpp"
+#include <modes.hpp>
 
 /*
     Pins used for step buttons:
@@ -12,24 +13,6 @@
     Pins used for mode buttons:
     PD7, PD6
 */
-
-class ButtonObservable{
-    public:
-        void addObserver(ButtonObserver *observer){
-            observers[observerCount] = observer;
-            observerCount++;
-        }
-
-        void notify(int buttonIndex, int mode){
-            for(int i = 0; i < observerCount; i++){
-                observers[i]->onButtonPressed(buttonIndex, mode);
-            }
-        }
-
-    private:
-        ButtonObserver *observers[8];
-        int observerCount = 0;
-};
 
 // button pin by port, name and number
 class PushButton{
@@ -94,12 +77,35 @@ class ControlInterfaceButtons : public ButtonObservable{
                 buttons[i].tick();
             }
 
-            int mode = 0;
+            // read mode buttons states
+            bool stateA = modeButtons[0].read();
+            bool stateB = modeButtons[1].read();
+
+            int command;
+
+            if(!stateA && !stateB){
+                command = CMD_PRESS_STEP;
+            }
+            if(stateA && !stateB){
+                command = CMD_SET_MODE;
+            }
+            if(!stateA && stateB){
+                command = CMD_SELECT_STEP;
+            }
 
             for(int i = 0; i < 8; i++){
                 if(buttons[i].isTriggered()){
-                    notify(i, mode);
+                    notify(i, command);
+                    return;
                 }
+            }
+
+            // if no button was triggered, check mode buttons
+            if(modeButtons[0].isTriggered()){
+                notify(0, CMD_SHIFT);
+            }
+            if(modeButtons[1].isTriggered()){
+                notify(1, CMD_SHIFT);
             }
         }
 
