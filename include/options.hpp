@@ -46,10 +46,10 @@ private:
     void handleSetMode(int buttonIndex) {
         switch(buttonIndex) {
             case MODE_ACTIVE:
-                _stepper->setMode(MODE_LENGTH);
+                _stepper->setMode(MODE_ACTIVE);
                 break;
             case MODE_LENGTH:
-                _stepper->setMode(MODE_ACTIVE);
+                _stepper->setMode(MODE_LENGTH);
                 break;
             default:
                 break;
