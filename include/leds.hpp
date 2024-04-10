@@ -22,7 +22,7 @@ class Leds{
                         stepping();
                         break;
                     case MODE_LENGTH:
-                        setSpan(2);
+                        setSpan(_stepper.getStep(_stepper.getSelectedStep())->getLength());
                         break;
                     default:
                         break;

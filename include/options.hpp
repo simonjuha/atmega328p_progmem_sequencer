@@ -13,13 +13,35 @@ class ModeSelector : public ButtonObserver{
         void onButtonPressed(int buttonIndex, int command){
             
             switch(command){
+
                 case CMD_PRESS_STEP: // turn on/off steps
-                    _stepper->getStep(buttonIndex)->setState(!_stepper->getStep(buttonIndex)->getState());
+                    switch(_stepper->getMode()){
+                        case MODE_ACTIVE:
+                            _stepper->getStep(buttonIndex)->setState(!_stepper->getStep(buttonIndex)->getState());
+                            break;
+                        case MODE_LENGTH:
+                            _stepper->getStep(_stepper->getSelectedStep())->setLength(buttonIndex + 1);
+                            break;
+                        default:
+                            break;
+                    }
                     break;
+
                 case CMD_SELECT_STEP: // select step
                     _stepper->setSelectedStep(buttonIndex);
                     break;
+
                 case CMD_SET_MODE: // set mode
+                    switch(buttonIndex){
+                        case MODE_LENGTH:
+                            _stepper->setMode(MODE_ACTIVE);
+                            break;
+                        case MODE_ACTIVE:
+                            _stepper->setMode(MODE_LENGTH);
+                            break;
+                        default:
+                            break;
+                    }
                     break;
                 default:
                     break;

@@ -81,6 +81,9 @@ public:
         return _mode;
     }
 
+    void setMode(Mode mode){
+        _mode = mode;
+    }
 
 private:
     uint8_t _step = 0;

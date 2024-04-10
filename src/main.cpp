@@ -104,28 +104,19 @@ int main(){
     TIFR1 |= (1 << OCF1A); 
 
     /* -------- ADC setup -------- */
-    ADMUX |= (1 << REFS0);
-    ADCSRA |= (1 << ADEN) | (1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0) | (1 << ADSC) | (1 << ADATE);
+    //ADMUX |= (1 << REFS0);
+    //ADCSRA |= (1 << ADEN) | (1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0) | (1 << ADSC) | (1 << ADATE);
 
     // LED
     DDRB |= (1 << LED1);
-
-    // read ADC5
-    ADMUX = (ADMUX & 0xF8) | 0x05;
-    
     
     sei();
 
-    
-    stepper.getStep(3)->setState(false);
-
     while(1){
-
-        //uint16_t adc_value = ADC;
 
         buttons.tick();
         
-
+        
         static int i = 0;
 
         if(buffer_put(pgm_read_byte(&random_chunk1[i]))){
