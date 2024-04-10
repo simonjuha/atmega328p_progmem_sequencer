@@ -26,28 +26,21 @@ public:
 
     StepState step(){
 
-        _step++;
-        if(_step >= STEPPER_STEPS_TOT){
-            _step = 0;
-        }
+        incrementStep();
         
         Step* currentStep = &_steps[_stepIndex];
 
 
         // step inactive (OFF)
-        if(currentStep->getStepNumber() + currentStep->getStartOffset() + currentStep->getLength() == _step){
-            _stepIndex++;
-            if(_stepIndex >= STEPPER_STEPS_MAX){
-                _stepIndex = 0;
-            }
-            _nextStepActive = false;
-            return OFF; // sampled stops playing
+        if(isStepInactive(currentStep)){
+            moveToNextStep();
+            return OFF;
         }
 
         // step active (ON)
-        if((currentStep->getStepNumber() + currentStep->getStartOffset() == _step) && currentStep->getState()){
+        if(isStepActive(currentStep)){
             _nextStepActive = true;
-            return ON; // sample is played
+            return ON;
         }
 
         return CONTINUE;
@@ -86,6 +79,29 @@ public:
     }
 
 private:
+    void incrementStep(){
+        _step++;
+        if(_step >= STEPPER_STEPS_TOT){
+            _step = 0;
+        }
+    }
+
+    bool isStepInactive(Step* currentStep){
+        return currentStep->getStepNumber() + currentStep->getStartOffset() + currentStep->getLength() == _step;
+    }
+
+    void moveToNextStep(){
+        _stepIndex++;
+        if(_stepIndex >= STEPPER_STEPS_MAX){
+            _stepIndex = 0;
+        }
+        _nextStepActive = false;
+    }
+
+    bool isStepActive(Step* currentStep){
+        return (currentStep->getStepNumber() + currentStep->getStartOffset() == _step) && currentStep->getState();
+    }
+
     uint8_t _step = 0;
     Step _steps[STEPPER_STEPS_MAX];
 
