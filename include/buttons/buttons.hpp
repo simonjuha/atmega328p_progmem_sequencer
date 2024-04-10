@@ -6,6 +6,9 @@
 #include "buttonObserver.hpp"
 #include <modes.hpp>
 
+#define BUTTON_COUNT 8
+#define MODE_BUTTON_COUNT 2
+
 /*
     Pins used for step buttons:
     PB2, PB3, PB4, PB5, PC0, PC1, PC2, PC3
@@ -81,19 +84,42 @@ class ControlInterfaceButtons : public ButtonObservable{
             bool stateA = modeButtons[0].read();
             bool stateB = modeButtons[1].read();
 
-            int command;
+            int command = (stateA << 1 | stateB); // convert button states to a command
+            // int command = (stateA << 2 | stateB << 1 | stateC); for a third button
 
-            if(!stateA && !stateB){
-                command = CMD_PRESS_STEP;
-            }
-            if(stateA && !stateB){
-                command = CMD_SET_MODE;
-            }
-            if(!stateA && stateB){
-                command = CMD_SELECT_STEP;
+            switch(command) {
+                case 0: // 00: both buttons are not pressed
+                    command = CMD_PRESS_STEP;
+                    break;
+                case 2: // 10: only button A is pressed
+                    command = CMD_SET_MODE;
+                    break;
+                case 1: // 01: only button B is pressed
+                    command = CMD_SELECT_STEP;
+                    break;
+                default:
+                    // handle the case when both buttons are pressed
+                    break;
             }
 
-            for(int i = 0; i < 8; i++){
+            notifyButtonTrigger(command);
+        }
+
+
+    private:
+        PushButton buttons[8];
+        PushButton modeButtons[2];
+
+        bool read(int i){
+            return buttons[i].read();
+        }
+
+        bool isTriggered(int i){
+            return buttons[i].isTriggered();
+        }
+
+        void notifyButtonTrigger(int command){
+            for(int i = 0; i < BUTTON_COUNT; i++){
                 if(buttons[i].isTriggered()){
                     notify(i, command);
                     return;
@@ -102,22 +128,12 @@ class ControlInterfaceButtons : public ButtonObservable{
 
             // if no button was triggered, check mode buttons
             if(modeButtons[0].isTriggered()){
-                notify(0, CMD_SHIFT);
+                notify(0, CMD_SHIFTA);
             }
-            if(modeButtons[1].isTriggered()){
-                notify(1, CMD_SHIFT);
+            else if(modeButtons[1].isTriggered()){
+                notify(1, CMD_SHIFTB);
             }
-        }
-
-
-    private:
-        PushButton buttons[8];
-        PushButton modeButtons[2];
-        bool read(int i){
-            return buttons[i].read();
-        }
-        bool isTriggered(int i){
-            return buttons[i].isTriggered();
+          
         }
     
 };
