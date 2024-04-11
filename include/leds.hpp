@@ -2,6 +2,7 @@
 
 #define N_LEDS 8
 #include <avr_ws2812.h>
+#define CENTER_LED 4
 
 class Leds{
     public:
@@ -24,6 +25,13 @@ class Leds{
                     case MODE_LENGTH:
                         setSpan(_stepper.getStep(_stepper.getSelectedStep())->getLength());
                         break;
+                    case MODE_RATE:
+                        setSpan(_stepper.getStep(_stepper.getSelectedStep())->getSampleRate());
+                        break;
+                    case MODE_OFFSET: // 0 is the start offset (center at 4)
+                        setFromCenter(_stepper.getStep(_stepper.getSelectedStep())->getStartOffset());
+                        break;
+
                     default:
                         break;
                 }
@@ -62,6 +70,27 @@ class Leds{
             if(nextStepActive && activeStep == selected) {
                 leds[selected] = _activeAndSelectedColor;
             }
+            refresh();
+        }
+        void setFromCenter(unsigned int index){
+            for(int i = 0; i < N_LEDS; i++){
+                leds[i] = _off;
+            }
+            int centeredValue = CENTER_LED + index;
+
+            if(centeredValue > CENTER_LED){
+                for(int i = CENTER_LED+1; i <= centeredValue; i++){
+                    leds[i] = _selectColor;
+                }
+            }
+            if(centeredValue < CENTER_LED){
+                for(int i = CENTER_LED-1; i >= centeredValue; i--){
+                    leds[i] = _selectColor;
+                }
+            }
+
+            leds[CENTER_LED] = _defaultColor;
+            leds[centeredValue] = _activeColor;
             refresh();
         }
 

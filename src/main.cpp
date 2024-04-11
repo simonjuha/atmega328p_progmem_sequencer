@@ -146,7 +146,7 @@ int main(){
             default:
                 break;
         }
-        OCR2A = stepper.getStepSampleRate();
+        OCR2A = (1<<stepper.getStepSampleRate())-1;
 
         leds.tick();
 

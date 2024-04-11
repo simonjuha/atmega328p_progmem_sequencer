@@ -5,12 +5,10 @@
 class Step{
     public:
     Step(uint8_t stepNumber) : _stepNumber(stepNumber){
-        //_sampleRate = rand() % 255;
-        _sampleRate = 255;
+        _sampleRate = 8;
     }
     Step() : _stepNumber(0){
-        //_sampleRate = rand() % 255;
-        _sampleRate = 255;
+        _sampleRate = 8;
     }
 
     uint8_t getSampleRate(){
@@ -29,11 +27,11 @@ class Step{
         return _stepNumber;
     }
 
-    void setStartOffset(uint8_t startOffset){
+    void setStartOffset(int8_t startOffset){
         _startOffset = startOffset;
     }
 
-    uint8_t getStartOffset(){
+    int8_t getStartOffset(){
         return _startOffset;
     }
 
@@ -56,7 +54,7 @@ class Step{
     private:
         bool    _active = true;
         uint8_t _sampleRate;
-        uint8_t _startOffset = 0;
+        int8_t _startOffset = 0;
         uint8_t _length;
         uint8_t _stepNumber;
 

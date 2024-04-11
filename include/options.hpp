@@ -34,6 +34,12 @@ private:
             case MODE_LENGTH:
                 _stepper->getStep(_stepper->getSelectedStep())->setLength(buttonIndex + 1);
                 break;
+            case MODE_RATE:
+                _stepper->getStep(_stepper->getSelectedStep())->setSampleRate((buttonIndex + 1));
+                break;
+            case MODE_OFFSET:
+                _stepper->getStep(_stepper->getSelectedStep())->setStartOffset(buttonIndex-4);
+                break;
             default:
                 break;
         }
@@ -50,6 +56,12 @@ private:
                 break;
             case MODE_LENGTH:
                 _stepper->setMode(MODE_LENGTH);
+                break;
+            case MODE_RATE:
+                _stepper->setMode(MODE_RATE);
+                break;
+            case MODE_OFFSET:
+                _stepper->setMode(MODE_OFFSET);
                 break;
             default:
                 break;

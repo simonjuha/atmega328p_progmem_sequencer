@@ -2,6 +2,8 @@
 enum Mode{
     MODE_ACTIVE,
     MODE_LENGTH,
+    MODE_RATE,
+    MODE_OFFSET,
 };
 
 enum Command{
