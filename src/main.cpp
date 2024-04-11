@@ -81,11 +81,6 @@ ModeSelector selector(&stepper, &buttons);
 
 int main(){
 
-
-    // enable interrupt on button 4 (PD3 / INT1)
-    EIMSK |= (1 << INT1);  // Enable INT1 (PD3)
-    EICRA |= (1 << ISC10); // Trigger on falling edge
-
     /* -------- 8-bit PWM setup (Timer0) -------- */
     DDRD   |= (1 << PWM_OUT);
     TCCR0A |= (1 << COM0B1) | (1 << WGM00) | (1 << WGM01);
@@ -103,10 +98,6 @@ int main(){
     TIMSK1 |= (1 << OCIE1A);// Enable Timer1 interrupt
     TIFR1 |= (1 << OCF1A); 
 
-    /* -------- ADC setup -------- */
-    //ADMUX |= (1 << REFS0);
-    //ADCSRA |= (1 << ADEN) | (1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0) | (1 << ADSC) | (1 << ADATE);
-
     // LED
     DDRB |= (1 << LED1);
     
@@ -116,15 +107,14 @@ int main(){
 
         buttons.tick();
         
-        
-        static int i = 0;
+        static int i_prog = 0;
 
-        if(buffer_put(pgm_read_byte(&random_chunk1[i]))){
+        if(buffer_put(pgm_read_byte(&random_chunk1[i_prog]))){
             // if buffer is full, do nothing
         }else{
-            i++;
-            if(i >= random_chunk1_size){
-                i = 0;
+            i_prog++;
+            if(i_prog >= random_chunk1_size){
+                i_prog = 0;
             }
         }
         
@@ -135,6 +125,8 @@ int main(){
             gateState = stepper.step();
             doStep = false;
         }
+
+        // play sample
         switch (gateState)
         {
             case ON:
@@ -146,10 +138,11 @@ int main(){
             default:
                 break;
         }
+
+        // change sample rate
         OCR2A = (1<<stepper.getStepSampleRate())-1;
 
         leds.tick();
-
     }
 
 
@@ -183,22 +176,8 @@ ISR(TIMER2_COMPA_vect) {
 
 // Timer1 interrupt (trigger once)
 ISR(TIMER1_COMPA_vect) {
-    // toggle led
-    //PORTB ^= (1 << LED1);
-    // do step
     doStep = true;
-
     leds.doChange();
-}
-
-// trigger sample interrupt
-ISR(INT1_vect) {
-    //if(!(PIND & (1 << BTN4))){
-       // sampleIsPlaying = false;
-    //}
-    //else{
-        //sampleIsPlaying = true;
-    //}
 }
 
 
