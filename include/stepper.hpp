@@ -31,19 +31,16 @@ public:
         Step* currentStep = &_steps[_stepIndex];
         Step* nextStep = &_steps[(_stepIndex + 1) % STEPPER_STEPS_MAX];
 
+        StepState state = isStepActive(currentStep, nextStep);
 
-        // step inactive (OFF)
-        if(isStepInactive(currentStep, nextStep)){
-            moveToNextStep();
-            return OFF;
-        }
-
-        // step active (ON)
-        if(isStepActive(currentStep, nextStep)){
+        if(state == ON){
             _nextStepActive = true;
             return ON;
         }
-
+        if(state == OFF){
+            moveToNextStep();
+            return OFF;
+        }
         return CONTINUE;
     }
 
@@ -95,12 +92,14 @@ private:
         _nextStepActive = false;
     }
 
-    bool isStepInactive(Step* currentStep, Step* nextStep){
-        return getStepEnd(currentStep) == _step;
-    }
-
-    bool isStepActive(Step* currentStep, Step* nextStep){
-        return (getStepStart(currentStep) == _step) && currentStep->getState();
+    StepState isStepActive(Step* currentStep, Step* nextStep){
+        if((getStepStart(currentStep) == _step) && currentStep->getState()){
+            return ON;
+        }
+        if(getStepEnd(currentStep) == _step){
+            return OFF;
+        }
+        return CONTINUE;
     }
 
     int getStepEnd(Step *step){
