@@ -33,15 +33,17 @@ public:
 
         StepState state = isStepActive(currentStep, nextStep);
 
-        if(state == ON){
-            _nextStepActive = true;
-            return ON;
+        // check if step is active or should continue with current state
+        switch (state) {
+            case ON:
+                _nextStepActive = true;
+                return ON;
+            case OFF:
+                moveToNextStep();
+                return OFF;
+            default:
+                return CONTINUE;
         }
-        if(state == OFF){
-            moveToNextStep();
-            return OFF;
-        }
-        return CONTINUE;
     }
 
     uint8_t getStepSampleRate(){
