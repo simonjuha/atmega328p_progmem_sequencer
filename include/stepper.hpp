@@ -29,16 +29,17 @@ public:
         incrementStep();
         
         Step* currentStep = &_steps[_stepIndex];
+        Step* nextStep = &_steps[(_stepIndex + 1) % STEPPER_STEPS_MAX];
 
 
         // step inactive (OFF)
-        if(isStepInactive(currentStep)){
+        if(isStepInactive(currentStep, nextStep)){
             moveToNextStep();
             return OFF;
         }
 
         // step active (ON)
-        if(isStepActive(currentStep)){
+        if(isStepActive(currentStep, nextStep)){
             _nextStepActive = true;
             return ON;
         }
@@ -86,10 +87,6 @@ private:
         }
     }
 
-    bool isStepInactive(Step* currentStep){
-        return currentStep->getStepNumber() + currentStep->getStartOffset() + currentStep->getLength() == _step;
-    }
-
     void moveToNextStep(){
         _stepIndex++;
         if(_stepIndex >= STEPPER_STEPS_MAX){
@@ -98,8 +95,20 @@ private:
         _nextStepActive = false;
     }
 
-    bool isStepActive(Step* currentStep){
-        return (currentStep->getStepNumber() + currentStep->getStartOffset() == _step) && currentStep->getState();
+    bool isStepInactive(Step* currentStep, Step* nextStep){
+        return getStepEnd(currentStep) == _step;
+    }
+
+    bool isStepActive(Step* currentStep, Step* nextStep){
+        return (getStepStart(currentStep) == _step) && currentStep->getState();
+    }
+
+    int getStepEnd(Step *step){
+        return step->getStepNumber() + step->getStartOffset() + step->getLength();
+    }
+
+    int getStepStart(Step *step){
+        return step->getStepNumber() + step->getStartOffset();
     }
 
     uint8_t _step = 0;
