@@ -12,7 +12,8 @@
 enum StepState{
     ON,
     OFF,
-    CONTINUE
+    CONTINUE,
+    LEGATO,
 };
 
 class Stepper {
@@ -40,7 +41,12 @@ public:
                 return ON;
             case OFF:
                 moveToNextStep();
+                _nextStepActive = false;
                 return OFF;
+            case LEGATO:
+                moveToNextStep();
+                _nextStepActive = true;
+                return LEGATO;
             default:
                 return CONTINUE;
         }
@@ -91,7 +97,6 @@ private:
         if(_stepIndex >= STEPPER_STEPS_MAX){
             _stepIndex = 0;
         }
-        _nextStepActive = false;
     }
 
     StepState isStepActive(Step* currentStep, Step* nextStep){
@@ -99,6 +104,9 @@ private:
             return ON;
         }
         if(getStepEnd(currentStep) == _step){
+            if(nextStep != nullptr && getStepStart(nextStep) == _step){
+                return LEGATO;
+            }
             return OFF;
         }
         return CONTINUE;

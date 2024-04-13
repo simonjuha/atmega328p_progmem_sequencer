@@ -124,6 +124,8 @@ int main(){
         if(doStep){
             gateState = stepper.step();
             doStep = false;
+            // change sample rate
+            OCR2A = (1<<stepper.getStepSampleRate())-1;
         }
 
         // play sample
@@ -135,12 +137,12 @@ int main(){
             case OFF:
                 sampleIsPlaying = false;
                 break;
+            case LEGATO:
+                sampleIsPlaying = true;
+                break;
             default:
                 break;
         }
-
-        // change sample rate
-        OCR2A = (1<<stepper.getStepSampleRate())-1;
 
         leds.tick();
     }
