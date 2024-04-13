@@ -100,15 +100,22 @@ private:
     }
 
     StepState isStepActive(Step* currentStep, Step* nextStep){
-        if((getStepStart(currentStep) == _step) && currentStep->getState()){
+        int currentStepStart = getStepStart(currentStep);
+        int currentStepEnd = getStepEnd(currentStep);
+        bool isCurrentStepActive = currentStep->getState();
+
+        if(currentStepStart == _step && isCurrentStepActive){
             return ON;
         }
-        if(getStepEnd(currentStep) == _step){
-            if(nextStep != nullptr && getStepStart(nextStep) == _step){
+
+        bool isNextStepStartSameAsCurrentStepEnd = getStepStart(nextStep) == _step;
+        if(currentStepEnd == _step){
+            if(isNextStepStartSameAsCurrentStepEnd){
                 return LEGATO;
             }
             return OFF;
         }
+
         return CONTINUE;
     }
 
