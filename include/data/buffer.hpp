@@ -2,7 +2,7 @@
 #include <stdint.h>
 #include <avr/interrupt.h>
 #include <avr/pgmspace.h>
-#include <data/dataBanks.cpp>
+#include <data/dataBanks.hpp>
 
 #define BUFFER_SIZE 256
 

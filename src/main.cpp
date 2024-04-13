@@ -1,20 +1,13 @@
-// ATmega328p
-#include <avr/io.h>
-#include <avr/interrupt.h>
-#include <avr/pgmspace.h>
-#include <stdint.h>
-#include <stdlib.h>
+/* 
+    ATmega328p - minimal musical stepper sequencer
+    F_CPU = 16MHz
+*/
 
 #include <stepper.hpp>
-
 #include <buttons/buttons.hpp>
-#include <options.hpp>
+#include <modeSelector.hpp>
 #include <leds.hpp>
-
-#include <data/buffer.cpp>
-
-#define F_CPU 16000000UL
-
+#include <data/buffer.hpp>
 
 Stepper stepper;
 Leds leds(stepper);
@@ -24,9 +17,6 @@ ModeSelector selector(&stepper, &buttons);
 bool doStep = false;
 
 int main(){
-
-
-
     /* -------- 16-bit Timer interupt setup (Timer1) -------- */
     TCCR1B |= (1 << WGM12) | (1 << CS10) | (1 << CS11);
     OCR1A = 6000;
@@ -37,7 +27,7 @@ int main(){
 
     buffer_init();
 
-    while(1){
+    while(true){
 
         buttons.tick();
         buffer_tick();
@@ -56,13 +46,11 @@ int main(){
         switch (gateState)
         {
             case ON:
+            case LEGATO:
                 setSamplePlayback(true);
                 break;
             case OFF:
                 setSamplePlayback(false);
-                break;
-            case LEGATO:
-                setSamplePlayback(true);
                 break;
             default:
                 break;
