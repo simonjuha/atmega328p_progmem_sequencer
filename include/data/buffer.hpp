@@ -17,14 +17,34 @@ volatile uint8_t head = 0;
 volatile uint8_t tail = 0;
 
 static bool sampleIsPlaying = false;
+static int selectedBank = 0;
 
 void setSamplePlayback(bool play){
     sampleIsPlaying = play;
 }
 
+int getBankIndex(){
+    return selectedBank;
+}
+
 void setSampleBank(const uint8_t *bank, size_t size){
     sampleBank = bank;
     sampleBank_size = size;
+}
+
+void selectSampleBank(uint8_t bank){
+    switch(bank){
+        case 0:
+            selectedBank = 0;
+            setSampleBank(random_chunk1, sizeof(random_chunk1)/sizeof(random_chunk1[0]));
+            break;
+        case 1:
+            selectedBank = 1;
+            setSampleBank(random_chunk2, sizeof(random_chunk2)/sizeof(random_chunk2[0]));
+            break;
+        default:
+            break;
+    }
 }
 
 // Add a value to the buffer

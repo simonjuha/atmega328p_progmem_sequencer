@@ -31,6 +31,9 @@ class Leds{
                     case MODE_OFFSET: // 0 is the start offset (center at 4)
                         setFromCenter(_stepper.getStep(_stepper.getSelectedStep())->getStartOffset());
                         break;
+                    case MODE_BANK:
+                        setSingle(getBankIndex());
+                        break;
 
                     default:
                         break;
@@ -91,6 +94,13 @@ class Leds{
             if(nextStepActive && activeStep == selected) {
                 leds[selected] = mixColors(_activeColor, _selectColor);
             }
+            refresh();
+        }
+
+        void setSingle(int index){
+            setAllLedsOff();
+            leds[index] = _selectColor;
+            setSelectedLedColor();
             refresh();
         }
         

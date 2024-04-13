@@ -2,6 +2,7 @@
 
 #include <buttons/buttonObserver.hpp>
 #include <stepper.hpp>
+#include <data/buffer.hpp>
 
 class ModeSelector : public ButtonObserver {
 public:
@@ -40,6 +41,9 @@ private:
             case MODE_OFFSET:
                 _stepper->getStep(_stepper->getSelectedStep())->setStartOffset(buttonIndex-4);
                 break;
+            case MODE_BANK:
+                selectSampleBank(buttonIndex);
+                break;
             default:
                 break;
         }
@@ -62,6 +66,9 @@ private:
                 break;
             case MODE_OFFSET:
                 _stepper->setMode(MODE_OFFSET);
+                break;
+            case MODE_BANK:
+                _stepper->setMode(MODE_BANK);
                 break;
             default:
                 break;
