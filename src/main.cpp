@@ -14,7 +14,7 @@
 #include <data/buffer.cpp>
 
 #define F_CPU 16000000UL
-#define PWM_OUT PD5
+
 
 Stepper stepper;
 Leds leds(stepper);
@@ -25,16 +25,7 @@ bool doStep = false;
 
 int main(){
 
-    /* -------- 8-bit PWM setup (Timer0) -------- */
-    DDRD   |= (1 << PWM_OUT);
-    TCCR0A |= (1 << COM0B1) | (1 << WGM00) | (1 << WGM01);
-    TCCR0B |= (1 << CS00);
 
-    /* -------- 8-bit Timer interupt setup (Timer2) -------- */
-    TCCR2A |= (1 << WGM21); // CTC mode
-    TCCR2B |= (1 << CS21) | (1 << CS20);
-    TIMSK2 |= (1 << OCIE2A);
-    OCR2A = 255;
 
     /* -------- 16-bit Timer interupt setup (Timer1) -------- */
     TCCR1B |= (1 << WGM12) | (1 << CS10) | (1 << CS11);

@@ -6,6 +6,8 @@
 
 #define BUFFER_SIZE 256
 
+#define PWM_OUT PD5
+
 // pointer to target bank
 const uint8_t* sampleBank;
 uint8_t sampleBank_size;
@@ -41,6 +43,17 @@ int buffer_put(uint8_t value) {
 }
 
 void buffer_init(){
+    /* -------- 8-bit Timer interupt setup (Timer2) -------- */
+    TCCR2A |= (1 << WGM21); // CTC mode
+    TCCR2B |= (1 << CS21) | (1 << CS20);
+    TIMSK2 |= (1 << OCIE2A);
+    OCR2A = 255;
+
+    /* -------- 8-bit PWM setup (Timer0) -------- */
+    DDRD   |= (1 << PWM_OUT);
+    TCCR0A |= (1 << COM0B1) | (1 << WGM00) | (1 << WGM01);
+    TCCR0B |= (1 << CS00);
+
     setSampleBank(random_chunk1, sizeof(random_chunk1)/sizeof(random_chunk1[0]));
 }
 
