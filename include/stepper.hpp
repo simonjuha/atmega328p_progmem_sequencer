@@ -105,7 +105,11 @@ private:
     }
 
     int getStepEnd(Step *step){
-        return step->getStepNumber() + step->getStartOffset() + step->getLength();
+        int stepEnd = step->getStepNumber() + step->getStartOffset() + step->getLength();
+        if (stepEnd >= STEPPER_STEPS_TOT) {
+            stepEnd = STEPPER_STEPS_TOT - 1;
+        }
+        return stepEnd;
     }
 
     int getStepStart(Step *step){
