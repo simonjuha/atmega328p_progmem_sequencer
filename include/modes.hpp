@@ -13,4 +13,6 @@ enum Command{
     CMD_SELECT_STEP,
     CMD_SHIFTA,
     CMD_SHIFTB,
+    CMD_SHIFTC,
+    CMD_SET_GLOBAL_MODE,
 };

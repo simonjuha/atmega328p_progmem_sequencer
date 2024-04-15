@@ -7,14 +7,14 @@
 #include <modes.hpp>
 
 #define BUTTON_COUNT 8
-#define MODE_BUTTON_COUNT 2
+#define MODE_BUTTON_COUNT 3
 
 /*
     Pins used for step buttons:
     PB2, PB3, PB4, PB5, PC0, PC1, PC2, PC3
 
     Pins used for mode buttons:
-    PD7, PD6
+    PD7, PD6, PB0
 */
 
 // button pin by port, name and number
@@ -73,32 +73,40 @@ class ControlInterfaceButtons : public ButtonObservable{
 
             modeButtons[0] = PushButton(&PORTD, PD6, &PIND);
             modeButtons[1] = PushButton(&PORTD, PD7, &PIND);
+            modeButtons[2] = PushButton(&PORTB, PB0, &PINB);
         }
 
         void tick(){
-            for(int i = 0; i < 8; i++){
+            for(int i = 0; i < BUTTON_COUNT; i++){
                 buttons[i].tick();
             }
 
             // read mode buttons states
             bool stateA = modeButtons[0].read();
             bool stateB = modeButtons[1].read();
+            bool stateC = modeButtons[2].read();
 
-            int command = (stateA << 1 | stateB); // convert button states to a command
-            // int command = (stateA << 2 | stateB << 1 | stateC); for a third button
+            int command = (stateA << 2 | stateB << 1 | stateC);
 
             switch(command) {
-                case 0: // 00: both buttons are not pressed
+                case 0: // 000: no buttons are pressed
                     command = CMD_PRESS_STEP;
                     break;
-                case 2: // 10: only button A is pressed
+                case 4: // 100: only button A is pressed
                     command = CMD_SET_MODE;
                     break;
-                case 1: // 01: only button B is pressed
+                case 2: // 010: only button B is pressed
                     command = CMD_SELECT_STEP;
                     break;
+                case 1: // 001: only button C is pressed
+                    command = CMD_SET_GLOBAL_MODE;
+                    break;
+                case 3: // 011: buttons B and C are pressed
+                case 5: // 101: buttons A and C are pressed
+                case 6: // 110: buttons A and B are pressed
+                case 7: // 111: all buttons are pressed
+                    break;
                 default:
-                    // handle the case when both buttons are pressed
                     break;
             }
 
@@ -107,8 +115,8 @@ class ControlInterfaceButtons : public ButtonObservable{
 
 
     private:
-        PushButton buttons[8];
-        PushButton modeButtons[2];
+        PushButton buttons[BUTTON_COUNT];
+        PushButton modeButtons[MODE_BUTTON_COUNT];
 
         bool read(int i){
             return buttons[i].read();
@@ -132,6 +140,9 @@ class ControlInterfaceButtons : public ButtonObservable{
             }
             else if(modeButtons[1].isTriggered()){
                 notify(1, CMD_SHIFTB);
+            }
+            else if(modeButtons[2].isTriggered()){
+                notify(2, CMD_SHIFTC);
             }
           
         }

@@ -21,6 +21,8 @@ public:
             case CMD_SET_MODE:
                 handleSetMode(buttonIndex);
                 break;
+            case CMD_SET_GLOBAL_MODE:
+                handleSetMode(buttonIndex);
             default:
                 break;
         }
