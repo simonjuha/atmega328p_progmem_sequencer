@@ -62,3 +62,8 @@ ISR(TIMER1_COMPA_vect) {
 ISR(INT1_vect) {
     INT1_triggered = true;
 }
+
+// set tempo
+void setTempo(uint16_t tempo) {
+    OCR1A = tempo;
+}
