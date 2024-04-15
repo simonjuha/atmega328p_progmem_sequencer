@@ -8,35 +8,33 @@
 #include <modeSelector.hpp>
 #include <leds.hpp>
 #include <data/buffer.hpp>
+#include <clockSource.hpp>
 
 Stepper stepper;
 Leds leds(stepper);
 ControlInterfaceButtons buttons;
 ModeSelector selector(&stepper, &buttons);
 
-bool doStep = false;
-
 int main(){
-    /* -------- 16-bit Timer interupt setup (Timer1) -------- */
-    TCCR1B |= (1 << WGM12) | (1 << CS10) | (1 << CS11);
-    OCR1A = 6000;
-    TIMSK1 |= (1 << OCIE1A);// Enable Timer1 interrupt
-    TIFR1 |= (1 << OCF1A); 
-    
     sei();
 
     buffer_init();
+    clockSource_init();
 
     while(true){
 
+        // tick
+        clockSource_tick();
         buttons.tick();
         buffer_tick();
         
         // stepping
         static int gateState;
 
-        if(doStep){
+        if(doStepNow()){
+            leds.doChange();
             gateState = stepper.step();
+            
             doStep = false;
             // change sample rate
             OCR2A = (1<<stepper.getStepSampleRate())-1;
@@ -56,12 +54,7 @@ int main(){
                 break;
         }
 
+        // tick leds
         leds.tick();
     }
-}
-
-// Timer1 stepper interrupt
-ISR(TIMER1_COMPA_vect) {
-    doStep = true;
-    leds.doChange();
 }
