@@ -4,7 +4,7 @@
 
 static bool doStep = false;
 static bool INT1_triggered = false;
-static bool externalClock = false;
+static bool externalClock = true;
 
 void clockSource_init(){
     /* -------- 16-bit Timer interupt setup (Timer1) -------- */
@@ -13,15 +13,19 @@ void clockSource_init(){
     TIMSK1 |= (1 << OCIE1A);// Enable Timer1 interrupt
     TIFR1 |= (1 << OCF1A); 
 
-    // PD4 as clock source selector
+    // PD4 as clock sync output
     DDRD &= ~(1 << PD4);
     PORTD |= (1 << PD4); // pull-up resistor
 
-    // PD3 interrupt input,
+    // PD3 clock interrupt input
     DDRD &= ~(1 << PD3);
     //PORTD |= (1 << PD3);
-    EICRA |= (1 << ISC11) | (1 << ISC10);
+    EICRA |= (1 << ISC11) | (1 << ISC10); // rising edge
     EIMSK |= (1 << INT1);
+}
+
+void setExternalClock(bool state) {
+    externalClock = state;
 }
 
 void handleClockSelection() {
@@ -59,6 +63,7 @@ ISR(TIMER1_COMPA_vect) {
     }
 }
 
+// External clock interrupt
 ISR(INT1_vect) {
     INT1_triggered = true;
 }
