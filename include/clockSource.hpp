@@ -32,10 +32,10 @@ void handleClockSelection() {
 }
 
 void clockSource_tick() {
-    if(!(PIND & (1 << PD4))){
-        externalClock = true;
+    if(!(PIND & (1 << PD3))){
+        
     }else{
-        externalClock = false;
+        
     }
 }
 
