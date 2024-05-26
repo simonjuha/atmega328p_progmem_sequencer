@@ -4,6 +4,7 @@
 #include "step.hpp"
 #include <modes.hpp>
 #include <avr/io.h>
+#include <globalSettings.hpp>
 
 #define STEPPER_STEPS_MAX 8 // max steps of a single sequence
 #define STEPPER_STEPS_DIV 8 // ministeps per step
@@ -35,18 +36,15 @@ public:
 
         StepState state = isStepActive(currentStep, nextStep);
 
-        // clock out
-        //clockOut(state == ON);
+        clockOut(state == ON);
 
         // check if step is active or should continue with current state
         switch (state) {
             case ON:
                 _nextStepActive = true;
-                clockOut(true);
                 return ON;
             case OFF:
                 moveToNextStep();
-                clockOut(false);
                 _nextStepActive = false;
                 return OFF;
             case LEGATO:
@@ -88,10 +86,6 @@ public:
 
     void setMode(Mode mode){
         _mode = mode;
-    }
-
-    void setSyncOffset(bool offset){
-        _syncOffset = offset;
     }
 
 private:
@@ -144,11 +138,11 @@ private:
     // clock sync output
     void clockOut(bool stepState){
         // send even clock sync - ignoring offset
-        if(!_syncOffset && _step % STEPPER_STEPS_DIV == 0){
+        if(!glst[GLST_CLOCK_OFFSET].value && (_step % STEPPER_STEPS_DIV == 0)){
             PORTD |= (1 << PD4); // high
             return;
         }
-        if(_syncOffset && stepState){
+        if(glst[GLST_CLOCK_OFFSET].value && stepState){
             PORTD |= (1 << PD4); // high
             return;
         }
@@ -166,7 +160,6 @@ private:
 
     Mode _mode = MODE_ACTIVE;
 
-    bool _syncOffset = false; // sync offset for clock out or clock out on every step
 
 
 };

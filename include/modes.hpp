@@ -5,6 +5,7 @@ enum Mode{
     MODE_RATE,
     MODE_OFFSET,
     MODE_BANK,
+    MODE_GLOBAL,
 };
 
 enum Command{

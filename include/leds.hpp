@@ -34,6 +34,17 @@ class Leds{
                     case MODE_BANK:
                         setSingle(getBankIndex());
                         break;
+                    case MODE_GLOBAL:
+                        // set LEDs on for global settings that are on
+                        for(int i = 0; i < 8; i++){
+                            if(glst[i].value){
+                                leds[i] = _defaultColor;
+                            } else {
+                                leds[i] = _off;
+                            }
+                        }
+                        break;
+
 
                     default:
                         break;

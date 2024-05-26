@@ -3,6 +3,7 @@
 #include <buttons/buttonObserver.hpp>
 #include <stepper.hpp>
 #include <data/buffer.hpp>
+#include <globalSettings.hpp>
 
 class ModeSelector : public ButtonObserver {
 public:
@@ -46,6 +47,18 @@ private:
             case MODE_BANK:
                 selectSampleBank(buttonIndex);
                 break;
+            case MODE_GLOBAL:
+                switch(buttonIndex) {
+                    case GLST_CLOCK_EXT:
+                        glst[GLST_CLOCK_EXT].value = !glst[GLST_CLOCK_EXT].value;
+                        break;
+                    case GLST_CLOCK_OFFSET:
+                        glst[GLST_CLOCK_OFFSET].value = !glst[GLST_CLOCK_OFFSET].value;
+                        break;
+                    default:
+                        break;
+                }
+                break;
             default:
                 break;
         }
@@ -71,6 +84,9 @@ private:
                 break;
             case MODE_BANK:
                 _stepper->setMode(MODE_BANK);
+                break;
+            case MODE_GLOBAL:
+                _stepper->setMode(MODE_GLOBAL);
                 break;
             default:
                 break;

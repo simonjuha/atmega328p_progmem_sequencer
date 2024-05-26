@@ -1,10 +1,10 @@
 #pragma once
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include <globalSettings.hpp>
 
 static bool doStep = false;
 static bool INT1_triggered = false;
-static bool externalClock = true;
 
 void clockSource_init(){
     /* -------- 16-bit Timer interupt setup (Timer1) -------- */
@@ -24,13 +24,9 @@ void clockSource_init(){
     EIMSK |= (1 << INT1);
 }
 
-void setExternalClock(bool state) {
-    externalClock = state;
-}
-
 void handleClockSelection() {
     doStep = true;
-    if(externalClock) {
+    if(glst[GLST_CLOCK_EXT].value) {
         INT1_triggered = false;
     }
 }
@@ -53,12 +49,12 @@ bool doStepNow() {
 
 // Timer1 stepper interrupt
 ISR(TIMER1_COMPA_vect) {
-    if(externalClock && INT1_triggered) {
+    if(glst[GLST_CLOCK_EXT].value && INT1_triggered) {
         handleClockSelection();
     }
 
     // internal clock
-    if(!externalClock) {
+    if(!glst[GLST_CLOCK_EXT].value) {
         handleClockSelection();
     }
 }
