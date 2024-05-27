@@ -51,11 +51,20 @@ class Step{
         return _active;
     }
 
+    uint8_t getBank(){
+        return _bank;
+    }
+
+    void setBank(uint8_t bank){
+        _bank = bank;
+    }
+
     private:
         bool    _active = true;
         uint8_t _sampleRate;
         int8_t _startOffset = 0;
         uint8_t _length;
         uint8_t _stepNumber;
+        uint8_t _bank = 0; // 0-7
 
 };

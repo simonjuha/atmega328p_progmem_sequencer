@@ -32,7 +32,7 @@ class Leds{
                         setFromCenter(_stepper.getStep(_stepper.getSelectedStep())->getStartOffset());
                         break;
                     case MODE_BANK:
-                        setSingle(getBankIndex());
+                        setSingle(_stepper.getStep(_stepper.getSelectedStep())->getBank());
                         break;
                     case MODE_GLOBAL:
                         // set LEDs on for global settings that are on

@@ -19,6 +19,12 @@ volatile uint8_t tail = 0;
 static bool sampleIsPlaying = false;
 static int selectedBank = 0;
 
+// reset buffer
+void buffer_reset(){
+    head = 0;
+    tail = 0;
+}
+
 void setSamplePlayback(bool play){
     sampleIsPlaying = play;
 }
@@ -33,6 +39,12 @@ void setSampleBank(const uint8_t *bank, size_t size){
 }
 
 void selectSampleBank(uint8_t bank){
+    if(bank == selectedBank){
+        return; // do nothing if the bank is already selected
+    }
+
+    //buffer_reset();
+
     switch(bank){
         case 0:
             selectedBank = 0;
@@ -98,6 +110,7 @@ ISR(TIMER2_COMPA_vect) {
             OCR0B = buffer[tail];
             tail = (tail + 1) % BUFFER_SIZE;
         }
+        OCR0B = buffer[tail]; // use previous value if buffer is empty - Sounds cool but not ideal, voids no sound when buffer is empty/underrun
     }
 }
 

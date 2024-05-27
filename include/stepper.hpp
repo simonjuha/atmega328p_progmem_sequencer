@@ -56,6 +56,10 @@ public:
         }
     }
 
+    uint8_t getStepBank(){
+        return _steps[_stepIndex].getBank();
+    }
+
     uint8_t getStepSampleRate(){
         return _steps[_stepIndex].getSampleRate();
     }

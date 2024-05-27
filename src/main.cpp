@@ -35,9 +35,7 @@ int main(){
             leds.doChange();
             gateState = stepper.step();
             
-            doStep = false;
-            // change sample rate
-            OCR2A = (1<<stepper.getStepSampleRate())-1;
+            doStep = false;            
         }
 
         // play sample
@@ -48,7 +46,12 @@ int main(){
                 setSamplePlayback(true);
                 break;
             case OFF:
+                // at this point the stepper has already moved to the next step
                 setSamplePlayback(false);
+                // set sample rate before next step
+                OCR2A = (1<<stepper.getStepSampleRate())-1;
+                // change bank to bank of next step
+                selectSampleBank(stepper.getStepBank());
                 break;
             default:
                 break;

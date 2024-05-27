@@ -45,7 +45,7 @@ private:
                 _stepper->getStep(_stepper->getSelectedStep())->setStartOffset(buttonIndex-4);
                 break;
             case MODE_BANK:
-                selectSampleBank(buttonIndex);
+                _stepper->getStep(_stepper->getSelectedStep())->setBank(buttonIndex);
                 break;
             case MODE_GLOBAL:
                 switch(buttonIndex) {
