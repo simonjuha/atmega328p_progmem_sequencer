@@ -13,7 +13,7 @@
 Stepper stepper;
 Leds leds(stepper);
 ControlInterfaceButtons buttons;
-ModeSelector selector(&stepper, &buttons);
+ModeSelector selector(&stepper, &buttons, &leds);
 
 int main(){
     sei();
@@ -23,8 +23,7 @@ int main(){
 
     while(true){
 
-        // tick
-        clockSource_tick();
+
         buttons.tick();
         buffer_tick();
         

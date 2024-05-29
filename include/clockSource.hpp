@@ -24,22 +24,8 @@ void clockSource_init(){
     EIMSK |= (1 << INT1);
 }
 
-void handleClockSelection() {
-    doStep = true;
-    if(glst[GLST_CLOCK_EXT].value) {
-        INT1_triggered = false;
-    }
-}
-
-void clockSource_tick() {
-    if(!(PIND & (1 << PD3))){
-        
-    }else{
-        
-    }
-}
-
 bool doStepNow() {
+    // check if a step should be executed
     if(doStep) {
         doStep = false;
         return true;
@@ -49,13 +35,14 @@ bool doStepNow() {
 
 // Timer1 stepper interrupt
 ISR(TIMER1_COMPA_vect) {
+    // external clock
     if(glst[GLST_CLOCK_EXT].value && INT1_triggered) {
-        handleClockSelection();
+        doStep = true;
+        INT1_triggered = false;
     }
-
     // internal clock
-    if(!glst[GLST_CLOCK_EXT].value) {
-        handleClockSelection();
+    else if(!glst[GLST_CLOCK_EXT].value) {
+        doStep = true;
     }
 }
 

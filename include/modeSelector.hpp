@@ -4,11 +4,13 @@
 #include <stepper.hpp>
 #include <data/buffer.hpp>
 #include <globalSettings.hpp>
+#include <leds.hpp>
 
 class ModeSelector : public ButtonObserver {
 public:
-    ModeSelector(Stepper *stepper, ButtonObservable *buttons): _stepper(stepper) {
+    ModeSelector(Stepper *stepper, ButtonObservable *buttons, Leds *leds): _stepper(stepper) {
         buttons->addObserver(this);
+        buttons->addObserver(leds);
     }
 
     void onButtonPressed(int buttonIndex, int command) {

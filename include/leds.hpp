@@ -1,10 +1,11 @@
 #pragma once
 
+#include <buttons/buttonObserver.hpp>
 #define N_LEDS 8
 #include <avr_ws2812.h>
 #define CENTER_LED 4
 
-class Leds{
+class Leds : public ButtonObserver{
     public:
         Leds(Stepper &stepper) : _stepper(stepper){
             for(int i = 0; i < N_LEDS; i++){
@@ -133,6 +134,10 @@ class Leds{
         
             setSelectedLedColor();
             refresh();
+        }
+
+        void onButtonPressed(int buttonIndex, int command){
+            _doChange = true;
         }
 
     private:
