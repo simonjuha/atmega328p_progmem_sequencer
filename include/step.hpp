@@ -11,7 +11,23 @@ class Step{
         _sampleRate = 8;
     }
 
-    uint8_t getSampleRate(){
+    void setSampleStart(uint8_t sampleStart){
+        _sampleStart = sampleStart;
+    }
+
+    void setSampleEnd(uint8_t sampleEnd){
+        _sampleEnd = sampleEnd;
+    }
+
+    uint8_t getSampleStart(){
+        return _sampleStart;
+    }
+
+    uint8_t getSampleEnd(){
+        return _sampleEnd;
+    }
+
+    uint16_t getSampleRate(){
         return _sampleRate;
     }
 
@@ -66,5 +82,7 @@ class Step{
         uint8_t _length;
         uint8_t _stepNumber;
         uint8_t _bank = 0; // 0-7
+        uint8_t _sampleEnd = 7;
+        uint8_t _sampleStart = 0;
 
 };

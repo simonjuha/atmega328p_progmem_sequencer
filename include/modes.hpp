@@ -4,6 +4,8 @@ enum Mode{
     MODE_LENGTH,
     MODE_RATE,
     MODE_OFFSET,
+    MODE_SAMPLE_START,
+    MODE_SAMPLE_END,
     MODE_BANK,
     MODE_GLOBAL,
 };

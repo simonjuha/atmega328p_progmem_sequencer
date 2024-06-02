@@ -32,6 +32,12 @@ class Leds : public ButtonObserver{
                     case MODE_OFFSET: // 0 is the start offset (center at 4)
                         setFromCenter(_stepper.getStep(_stepper.getSelectedStep())->getStartOffset());
                         break;
+                    case MODE_SAMPLE_START:
+                        setReverseSpan(_stepper.getStep(_stepper.getSelectedStep())->getSampleStart());
+                        break;
+                    case MODE_SAMPLE_END:
+                        setSpan(_stepper.getStep(_stepper.getSelectedStep())->getSampleEnd()+1);
+                        break;
                     case MODE_BANK:
                         setSingle(_stepper.getStep(_stepper.getSelectedStep())->getBank());
                         break;
@@ -74,6 +80,16 @@ class Leds : public ButtonObserver{
             setAllLedsOff();
             // set the selected led
             for(int i = 0; i < end; i++){
+                leds[i] = _selectColor;
+            }
+            setSelectedLedColor();
+            refresh();
+        }
+
+        void setReverseSpan(int start){
+            setAllLedsOff();
+            // set the selected led
+            for(int i = start; i < N_LEDS; i++){
                 leds[i] = _selectColor;
             }
             setSelectedLedColor();

@@ -92,6 +92,14 @@ public:
         _mode = mode;
     }
 
+    uint16_t getStepSampleStart(){
+        return _steps[_stepIndex].getSampleStart();
+    }
+
+    uint16_t getStepSampleEnd(){
+        return _steps[_stepIndex].getSampleEnd();
+    }
+
 private:
     void incrementStep(){
         _step++;
