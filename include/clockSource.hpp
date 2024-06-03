@@ -24,6 +24,14 @@ void clockSource_init(){
     EIMSK |= (1 << INT1);
 }
 
+void setStepClockActive(bool active){
+    if(active){
+        TIMSK1 |= (1 << OCIE1A); // Enable Timer1 interrupt
+    } else {
+        TIMSK1 &= ~(1 << OCIE1A); // Disable Timer1 interrupt
+    }
+}
+
 bool doStepNow() {
     // check if a step should be executed
     if(doStep) {

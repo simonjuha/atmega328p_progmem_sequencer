@@ -26,7 +26,7 @@ int main(){
 
         buttons.tick();
         buffer_tick();
-        
+           
         // stepping
         static int gateState;
 
@@ -38,6 +38,7 @@ int main(){
         }
 
         // play sample
+   
         switch (gateState)
         {
             case ON:
@@ -54,6 +55,7 @@ int main(){
                 // set sample start and end
                 setSampleStart(stepper.getStep(stepper.getStepIndex())->getSampleStart());
                 setSampleEnd(stepper.getStep(stepper.getStepIndex())->getSampleEnd());
+                setStepClockActive(running);
                 break;
             default:
                 break;

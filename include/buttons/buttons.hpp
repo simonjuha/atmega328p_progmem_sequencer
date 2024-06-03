@@ -81,6 +81,10 @@ class ControlInterfaceButtons : public ButtonObservable{
                 buttons[i].tick();
             }
 
+            for(int i = 0; i < MODE_BUTTON_COUNT; i++){
+                modeButtons[i].tick();
+            }
+
             // read mode buttons states
             bool stateA = modeButtons[0].read();
             bool stateB = modeButtons[1].read();

@@ -6,6 +6,8 @@
 #include <globalSettings.hpp>
 #include <leds.hpp>
 
+volatile static bool running = true;
+
 class ModeSelector : public ButtonObserver {
 public:
     ModeSelector(Stepper *stepper, ButtonObservable *buttons, Leds *leds): _stepper(stepper) {
@@ -24,8 +26,9 @@ public:
             case CMD_SET_MODE:
                 handleSetMode(buttonIndex);
                 break;
-            case CMD_SET_GLOBAL_MODE:
-                handleSetMode(buttonIndex);
+            case CMD_SHIFTC:
+                running = !running;
+                break;
             default:
                 break;
         }
