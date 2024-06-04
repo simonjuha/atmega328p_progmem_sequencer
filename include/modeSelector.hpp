@@ -26,8 +26,11 @@ public:
             case CMD_SET_MODE:
                 handleSetMode(buttonIndex);
                 break;
-            case CMD_SHIFTC:
+            case CMD_STARTSTOP:
                 running = !running;
+                break;
+            case CMD_RANDOMIZE:
+                _stepper->randomizeSelectedStep();
                 break;
             default:
                 break;

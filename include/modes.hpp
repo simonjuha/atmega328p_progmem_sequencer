@@ -18,4 +18,6 @@ enum Command{
     CMD_SHIFTB,
     CMD_SHIFTC,
     CMD_SET_GLOBAL_MODE,
+    CMD_RANDOMIZE,
+    CMD_STARTSTOP,
 };

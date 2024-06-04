@@ -56,6 +56,15 @@ public:
         }
     }
 
+    void randomizeSelectedStep(){
+        _steps[_selectedStep].setSampleStart(rand() % 7);
+        _steps[_selectedStep].setSampleEnd(rand() % 7);
+        _steps[_selectedStep].setSampleRate(4+rand() % 4);
+        //_steps[_selectedStep].setStartOffset(3+rand() % 3);
+        _steps[_selectedStep].setLength(1+rand() % 6);
+        _steps[_selectedStep].setBank(rand() % 8);
+    }
+
     uint8_t getStepBank(){
         return _steps[_stepIndex].getBank();
     }

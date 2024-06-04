@@ -108,6 +108,9 @@ class ControlInterfaceButtons : public ButtonObservable{
                 case 3: // 011: buttons B and C are pressed
                 case 5: // 101: buttons A and C are pressed
                 case 6: // 110: buttons A and B are pressed
+                    // set random value for current step
+                    command = CMD_RANDOMIZE;
+                    break;
                 case 7: // 111: all buttons are pressed
                     break;
                 default:
@@ -140,13 +143,17 @@ class ControlInterfaceButtons : public ButtonObservable{
 
             // if no button was triggered, check mode buttons
             if(modeButtons[0].isTriggered()){
+                if(modeButtons[1].read()){
+                    notify(1, CMD_RANDOMIZE);
+                }
+                else
                 notify(0, CMD_SHIFTA);
             }
             else if(modeButtons[1].isTriggered()){
                 notify(1, CMD_SHIFTB);
             }
             else if(modeButtons[2].isTriggered()){
-                notify(2, CMD_SHIFTC);
+                notify(2, CMD_STARTSTOP);
             }
           
         }
