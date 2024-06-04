@@ -72,6 +72,11 @@ public:
         return _stepIndex;
     }
 
+    void setStepIndex(uint8_t index){
+        _stepIndex = index;
+        _step = _steps[_stepIndex].getStepNumber();
+    }
+
     bool getNextStepActive(){
         return _nextStepActive;
     }

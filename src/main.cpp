@@ -56,6 +56,7 @@ int main(){
                 setSampleStart(stepper.getStep(stepper.getStepIndex())->getSampleStart());
                 setSampleEnd(stepper.getStep(stepper.getStepIndex())->getSampleEnd());
                 setStepClockActive(running);
+                leds.doChange();
                 break;
             default:
                 break;
