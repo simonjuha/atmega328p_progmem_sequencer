@@ -15,6 +15,8 @@ Leds leds(stepper);
 ControlInterfaceButtons buttons;
 ModeSelector selector(&stepper, &buttons, &leds);
 
+void handleOffState();
+
 int main(){
     sei();
 
@@ -32,13 +34,11 @@ int main(){
 
         if(doStepNow()){
             leds.doChange();
-            gateState = stepper.step();
-            
+            gateState = stepper.step(); // returns gate state of current step
             doStep = false;            
         }
 
         // play sample
-   
         switch (gateState)
         {
             case ON:
@@ -46,17 +46,7 @@ int main(){
                 setSamplePlayback(true);
                 break;
             case OFF:
-                // at this point the stepper has already moved to the next step
-                setSamplePlayback(false);
-                // set sample rate before next step
-                OCR2A = (2<<stepper.getStepSampleRate())-1;
-                // change bank to bank of next step
-                selectSampleBank(stepper.getStepBank());
-                // set sample start and end
-                setSampleStart(stepper.getStep(stepper.getStepIndex())->getSampleStart());
-                setSampleEnd(stepper.getStep(stepper.getStepIndex())->getSampleEnd());
-                setStepClockActive(running);
-                leds.doChange();
+                handleOffState(); // on step OFF (reached length of step)
                 break;
             default:
                 break;
@@ -65,4 +55,18 @@ int main(){
         // tick leds
         leds.tick();
     }
+}
+
+void handleOffState() {
+    // at this point the stepper has already moved to the next step
+    setSamplePlayback(false);
+    // set sample rate before next step
+    OCR2A = (2<<stepper.getStepSampleRate())-1;
+    // change bank to bank of next step
+    selectSampleBank(stepper.getStepBank());
+    // set sample start and end
+    setSampleStart(stepper.getStep(stepper.getStepIndex())->getSampleStart());
+    setSampleEnd(stepper.getStep(stepper.getStepIndex())->getSampleEnd());
+    setStepClockActive(running);
+    leds.doChange();
 }
