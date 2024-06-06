@@ -76,7 +76,7 @@ class Step{
     }
 
     private:
-        bool    _active = true;
+        bool    _active = false;
         uint8_t _sampleRate;
         int8_t _startOffset = 0;
         uint8_t _length;

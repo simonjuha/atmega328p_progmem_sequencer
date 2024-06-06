@@ -79,6 +79,10 @@ void selectSampleBank(uint8_t bank){
             selectedBank = 1;
             setSampleBank(random_chunk2, sizeof(random_chunk2)/sizeof(random_chunk2[0]));
             break;
+        case 2:
+            selectedBank = 2;
+            setSampleBank(tone1, sizeof(tone1)/sizeof(tone1[0]));
+            break;
         default:
             break;
     }
@@ -102,9 +106,10 @@ int buffer_put(uint8_t value) {
 void buffer_init(){
     /* -------- 8-bit Timer interupt setup (Timer2) -------- */
     TCCR2A |= (1 << WGM21); // CTC mode
-    TCCR2B |= (1 << CS21) | (1 << CS20);
+    TCCR2B |= (1 << CS20) | (1 << CS22);
     TIMSK2 |= (1 << OCIE2A);
     OCR2A = 255;
+    // timer frequency = 16MHz / 8 / 256 = 7812.5 Hz
 
     /* -------- 8-bit PWM setup (Timer0) -------- */
     DDRD   |= (1 << PWM_OUT);
@@ -138,7 +143,7 @@ ISR(TIMER2_COMPA_vect) {
             OCR0B = buffer[tail];
             tail = (tail + 1) % BUFFER_SIZE;
         }
-        OCR0B = buffer[tail]; // use previous value if buffer is empty - Sounds cool but not ideal, voids no sound when buffer is empty/underrun
+        //OCR0B = buffer[tail]; // use previous value if buffer is empty - Sounds cool but not ideal, voids no sound when buffer is empty/underrun
     }
 }
 

@@ -61,7 +61,7 @@ void handleOffState() {
     // at this point the stepper has already moved to the next step
     setSamplePlayback(false);
     // set sample rate before next step
-    OCR2A = (2<<stepper.getStepSampleRate())-1;
+    OCR2A = (4+1<<stepper.getStepSampleRate())-1;
     // change bank to bank of next step
     selectSampleBank(stepper.getStepBank());
     // set sample start and end
